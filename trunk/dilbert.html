@@ -19,16 +19,17 @@ li { margin-left: 18px;}
             <input id="date" name="date" type="hidden" value="{{ date }}">
             <div class="alpha grid_9">
                 <textarea id="desc" name="desc">{{ desc }}</textarea>
+                <br><input type="submit" value="Submit">
             </div>
             <div class="omega grid_4"><ul>
                 <li>Type <b>every word</b>
                 <li>Mention who said it. E.g<br><code>Pointy haired boss: Well, it could be worse</code>
                     <br>Wikipedia has a <a href="http://en.wikipedia.org/wiki/List_of_minor_characters_in_Dilbert">list of minor characters</a>
-                <li>DON'T TYPE IN CAPS
+                <li>DON'T TYPE IN CAPS unless the strip emphasises the text
                 <li>Check the spelling
             </ul></div>
-            <br><input type="submit" value="Submit">
         </form>
+        <div class="clear">&nbsp;</div>
         <script>document.getElementById("desc").focus()</script>
         {% else %}
             <pre id="desc">{{ desc }}</pre>
