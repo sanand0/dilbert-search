@@ -1,0 +1,57 @@
+<!doctype html>
+<html><head>
+<title>{{ date }}</title>
+<link rel="stylesheet" type="text/css" media="all" href="/a/960-full.css">
+<style>
+#desc, .desc { width: 556px; white-space: pre-wrap; text-align: left; font-family: Arial, sans-serif; font-weight: normal; }
+.author { font-style: italic; color: #39639d; }
+textarea#desc { height: 180px; }
+img.next, img.prev { width: 100px; border: 0; }
+input:focus, textarea:focus { outline: 2px solid #da1f28; }
+li { margin-left: 18px;}
+</style>
+</head><body>
+<div class="container_16">
+    <div class="grid_13">
+        <img src="http://www.geek.nl/pics/dilbert-arch/dilbert-{{ date }}.gif">
+        {% if user %}
+        <form action="" method="POST">
+            <input id="date" name="date" type="hidden" value="{{ date }}">
+            <textarea id="desc" name="desc">{{ desc }}</textarea>
+            <br><input type="submit">
+        </form>
+        <script>document.getElementById("desc").focus()</script>
+        {% else %}
+            <pre id="desc">{{ desc }}</pre>
+        {% endif %}
+        <br>
+        <a href="{{ prev }}">&laquo; Prev <img class="next" src="http://www.geek.nl/pics/dilbert-arch/dilbert-{{ prev }}.gif"></a>
+        <a href="{{ next }}"><img class="next" src="http://www.geek.nl/pics/dilbert-arch/dilbert-{{ next }}.gif"> Next &raquo;</a>
+        {% if past %}
+            <hr><h4>Earlier versions</h4>
+            {% for item in past %}
+                <div class="desc">{{ item.desc }}</div>
+                <span class="author">{{ item.user.nickname}} at {{ item.time.day }}-{{ item.time.month }}-{{ item.time.year }} {{ item.time.hour }}:{{ item.time.minute }}</span>
+                <hr>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div id="side_block" class="grid_3 block">
+        <p>If you'd like to search for Dilbert strips, you can help by typing in the strips here.</p>
+        {% if user %}
+            <ul>
+                <li><a href="{{ unused }}">Find an un-typed comic</a>
+                <li>Type in <b>every word</b>
+                <li>Mention who said it. E.g<br><code>Pointy haired boss: Well, it could be worse</code>
+                <li>Wikipedia has a <a href="http://en.wikipedia.org/wiki/List_of_minor_characters_in_Dilbert">list of minor characters</a>
+            </ul>
+            <a href="export">Export the text as JSON</a>
+            <br><a href="/logout/{{ date }}">Logout</a>
+        {% else %}
+            <a href="/login/{{ date }}">Login to type out the strips</a>
+            <br><a href="export">Export the text as JSON</a>
+        {% endif %}
+        <br><br>Thanks to <a href="http://www.geek.nl/">geek.nl</a>
+    </div>
+</div>
+</body></html>
