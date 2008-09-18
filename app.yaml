@@ -1,0 +1,12 @@
+application: dilbert-search
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /a/(.*)
+  static_files: a/\1
+  upload: a/(.*)
+
+- url: /.*
+  script: dilbert.py
