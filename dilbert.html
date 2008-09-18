@@ -3,9 +3,9 @@
 <title>{{ date }}</title>
 <link rel="stylesheet" type="text/css" media="all" href="/a/960-full.css">
 <style>
-#desc, .desc { width: 556px; white-space: pre-wrap; text-align: left; font-family: Arial, sans-serif; font-weight: normal; }
+#desc, .desc { width: 100%; white-space: pre-wrap; text-align: left; font: 13px Verdana, sans-serif; font-weight: normal; }
 .author { font-style: italic; color: #39639d; }
-textarea#desc { height: 180px; }
+textarea#desc { height: 150px; }
 img.next, img.prev { width: 100px; border: 0; }
 input:focus, textarea:focus { outline: 2px solid #da1f28; }
 li { margin-left: 18px;}
@@ -17,8 +17,17 @@ li { margin-left: 18px;}
         {% if user %}
         <form action="" method="POST">
             <input id="date" name="date" type="hidden" value="{{ date }}">
-            <textarea id="desc" name="desc">{{ desc }}</textarea>
-            <br><input type="submit">
+            <div class="alpha grid_9">
+                <textarea id="desc" name="desc">{{ desc }}</textarea>
+            </div>
+            <div class="omega grid_4"><ul>
+                <li>Type <b>every word</b>
+                <li>Mention who said it. E.g<br><code>Pointy haired boss: Well, it could be worse</code>
+                    <br>Wikipedia has a <a href="http://en.wikipedia.org/wiki/List_of_minor_characters_in_Dilbert">list of minor characters</a>
+                <li>DON'T TYPE IN CAPS
+                <li>Check the spelling
+            </ul></div>
+            <br><input type="submit" value="Submit">
         </form>
         <script>document.getElementById("desc").focus()</script>
         {% else %}
@@ -39,13 +48,8 @@ li { margin-left: 18px;}
     <div id="side_block" class="grid_3 block">
         <p>If you'd like to search for Dilbert strips, you can help by typing in the strips here.</p>
         {% if user %}
-            <ul>
-                <li><a href="{{ unused }}">Find an un-typed comic</a>
-                <li>Type in <b>every word</b>
-                <li>Mention who said it. E.g<br><code>Pointy haired boss: Well, it could be worse</code>
-                <li>Wikipedia has a <a href="http://en.wikipedia.org/wiki/List_of_minor_characters_in_Dilbert">list of minor characters</a>
-            </ul>
-            <a href="export">Export the text as JSON</a>
+            <a href="{{ unused }}">Find an un-typed comic</a>
+            <br><a href="export">Export the text as JSON</a>
             <br><a href="/logout/{{ date }}">Logout</a>
         {% else %}
             <a href="/login/{{ date }}">Login to type out the strips</a>

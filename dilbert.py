@@ -1,8 +1,3 @@
-'''
-- Start with an unfilled comic strip
-
-'''
-
 import wsgiref.handlers
 import datetime
 import random
