@@ -11,11 +11,17 @@ user     = users.get_current_user()
 oneday   = datetime.timedelta(1)
 startday = datetime.date(2001, 01, 01).toordinal()
 today    = datetime.date.today().toordinal()
+now      = datetime.datetime.now()
 
 class Dilbert(db.Model):
     date = db.StringProperty     (required=True)
     desc = db.TextProperty       (required=True)
     user = db.UserProperty       (required=True)
+    time = db.DateTimeProperty   (required=True, auto_now_add=True)
+
+class User(db.Model):
+    user = db.UserProperty       (required=True)
+    num  = db.IntegerProperty    (required=True)
     time = db.DateTimeProperty   (required=True, auto_now_add=True)
 
 class DilbertPage(webapp.RequestHandler):
@@ -24,7 +30,8 @@ class DilbertPage(webapp.RequestHandler):
             q = Dilbert.all().filter('date = ', date).order('-time').fetch(5)
             desc = q and q[0].desc or ''
             past = len(desc) > 1 and q[1:] or None
-            self.response.out.write(template.render('dilbert.html', { 'date': date, 'desc': desc, 'past': past, 'user': user, 'next': self.next(date), 'prev': self.prev(date), 'unused': self.unused() }))
+            users = User.all().order('-num').fetch(3)
+            self.response.out.write(template.render('dilbert.html', { 'date': date, 'desc': desc, 'past': past, 'user': user, 'next': self.next(date), 'prev': self.prev(date), 'unused': self.unused(), 'users': users }))
         else:
             self.redirect('/dilbert/' + self.unused(), True)
 
@@ -35,6 +42,16 @@ class DilbertPage(webapp.RequestHandler):
             desc = self.request.get('desc')
             # Add the description if it is different from the previous entry
             if q and q[0].desc != desc or not q: Dilbert(date=date, desc=desc, user=user).put()
+
+            # Update the user stats
+            q = User.all().filter('user = ', user).fetch(1)
+            if q:
+                q[0].num = q[0].num + 1
+                q[0].time = now
+                q[0].put()
+            else:
+                 User(user=user, num=1).put()
+
             self.redirect('/dilbert/' + self.next(date))
         else:
             self.redirect('/login/' + date)
