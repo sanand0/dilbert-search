@@ -56,7 +56,13 @@ li { margin-left: 18px;}
             <a href="/login/{{ date }}">Login to type out the strips</a>
             <br><a href="export">Export the text as JSON</a>
         {% endif %}
-        <br><br>Thanks to <a href="http://www.geek.nl/">geek.nl</a>
+        <br><br><b>Top authors</b>
+        <ul>
+        {% for user in users %}
+            <li>{{ user.user.nickname }} ({{ user.num }})
+        {% endfor %}
+        </ul>
+        Thanks to <a href="http://www.geek.nl/">geek.nl</a>
     </div>
 </div>
 </body></html>
