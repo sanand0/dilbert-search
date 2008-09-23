@@ -30,7 +30,7 @@ class DilbertPage(webapp.RequestHandler):
             q = Dilbert.all().filter('date = ', date).order('-time').fetch(5)
             desc = q and q[0].desc or ''
             past = len(desc) > 1 and q[1:] or None
-            users = User.all().order('-num').fetch(3)
+            users = User.all().order('-num').fetch(4)
             self.response.out.write(template.render('dilbert.html', { 'date': date, 'desc': desc, 'past': past, 'user': user, 'next': self.next(date), 'prev': self.prev(date), 'unused': self.unused(), 'users': users }))
         else:
             self.redirect('/dilbert/' + self.unused(), True)
