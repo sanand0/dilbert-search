@@ -13,8 +13,8 @@ li { margin-left: 18px;}
 </head><body>
 <div class="container_16">
     <div class="grid_13">
-        <img src="http://www.geek.nl/pics/dilbert-arch/dilbert-{{ date }}.gif">
-        <br><a target="dribibu" href="http://dribibu.xs4all.nl/dilbert{{ date }}.html">Click here if you can't see the image above</a>
+        <img src="{{ img_date }}">
+        <!-- <br><a target="dribibu" href="http://dribibu.xs4all.nl/dilbert{{ date }}.html">Click here if you can't see the image above</a> -->
         {% if user %}
         <form action="" method="POST">
             <input id="date" name="date" type="hidden" value="{{ date }}">
@@ -36,8 +36,8 @@ li { margin-left: 18px;}
             <pre id="desc">{{ desc }}</pre>
         {% endif %}
         <br>
-        <a href="{{ prev }}">&laquo; Prev <img class="next" src="http://www.geek.nl/pics/dilbert-arch/dilbert-{{ prev }}.gif"></a>
-        <a href="{{ next }}"><img class="next" src="http://www.geek.nl/pics/dilbert-arch/dilbert-{{ next }}.gif"> Next &raquo;</a>
+        <a href="{{ prev }}">&laquo; Prev <img class="next" src="{{ img_prev }}"></a>
+        <a href="{{ next }}"><img class="next" src="{{ img_next }}"> Next &raquo;</a>
         {% if past %}
             <hr><h4>Earlier versions</h4>
             {% for item in past %}
@@ -63,7 +63,7 @@ li { margin-left: 18px;}
             <li>{{ user.user.nickname }} ({{ user.num }})
         {% endfor %}
         </ul>
-        Thanks to <a href="http://www.geek.nl/">geek.nl</a>
+        Thanks to <a href="http://www.geek.nl/">geek.nl</a> and <a href="http://dribibu.xs4all.nl">dribibu.xs4all.nl</a>
     </div>
 </div>
 </body></html>

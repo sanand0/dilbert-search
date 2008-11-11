@@ -7,6 +7,7 @@ handlers:
 - url: /a/(.*)
   static_files: a/\1
   upload: a/(.*)
+  expiration: "1d"
 
 - url: /robots.txt
   static_files: robots.txt
@@ -15,6 +16,9 @@ handlers:
 - url: /favicon.ico
   static_files: favicon.ico
   upload: favicon.ico
+
+- url: /\d+/\d+\.gif
+  script: $PYTHON_LIB/google/appengine/ext/zipserve
 
 - url: /.*
   script: dilbert.py

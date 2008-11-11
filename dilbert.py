@@ -1,6 +1,4 @@
-import wsgiref.handlers
-import datetime
-import random
+import wsgiref.handlers, datetime, random
 
 from google.appengine.ext import webapp
 from google.appengine.ext import db
@@ -9,7 +7,8 @@ from google.appengine.ext.webapp import template
 
 user     = users.get_current_user()
 oneday   = datetime.timedelta(1)
-startday = datetime.date(2001, 01, 01).toordinal()
+startday = datetime.date(1993, 01, 01).toordinal()
+endyear  = '2008'
 today    = datetime.date.today().toordinal()
 now      = datetime.datetime.now()
 
@@ -28,18 +27,24 @@ class DilbertPage(webapp.RequestHandler):
     def get(self, date = None):
         if date:
             q = Dilbert.all().filter('date = ', date).order('-time').fetch(5)
-            desc = q and q[0].desc or ''
-            past = len(desc) > 1 and q[1:] or None
-            users = User.all().order('-num').fetch(10)
-            self.response.out.write(template.render('dilbert.html', { 'date': date, 'desc': desc, 'past': past, 'user': user, 'next': self.next(date), 'prev': self.prev(date), 'unused': self.unused(), 'users': users }))
+            out = { 'date': date, 'next': self.next(date), 'prev': self.prev(date) }
+            out['desc']     = q and q[0].desc or ''
+            out['past']     = len(out['desc']) > 1 and q[1:] or None
+            out['user']     = user
+            out['users']    = User.all().order('-num').fetch(10)
+            out['unused']   = self.unused()
+            out['img_date'] = out['date'] > endyear and 'http://www.geek.nl/pics/dilbert-arch/dilbert-' + out['date'] + '.gif' or '/' + out['date'][:7] + '/' + out['date'] + '.gif'
+            out['img_next'] = out['next'] > endyear and 'http://www.geek.nl/pics/dilbert-arch/dilbert-' + out['next'] + '.gif' or '/' + out['next'][:7] + '/' + out['next'] + '.gif'
+            out['img_prev'] = out['prev'] > endyear and 'http://www.geek.nl/pics/dilbert-arch/dilbert-' + out['prev'] + '.gif' or '/' + out['prev'][:7] + '/' + out['prev'] + '.gif'
+            self.response.out.write(template.render('dilbert.html', out))
         else:
             self.redirect('/dilbert/' + self.unused(), True)
 
     # Request to add a description for a date
     def post(self, date):
-        if user:
+        desc = self.request.get('desc')
+        if user and desc:
             q = Dilbert.all().filter('date = ', date).order('-time').fetch(1)
-            desc = self.request.get('desc')
             # Add the description if it is different from the previous entry
             if q and q[0].desc != desc or not q: Dilbert(date=date, desc=desc, user=user).put()
 
@@ -99,13 +104,13 @@ class LoginPage(webapp.RequestHandler):
         else:    self.redirect(users.create_login_url('/dilbert'))
 
 application = webapp.WSGIApplication([
-        ('/',               DilbertPage),
-        ('/dilbert/(\d*)',  DilbertPage),
-        ('/dilbert/export', ExportPage),
-        ('/logout',         LogoutPage),
-        ('/logout/(.+)',    LogoutPage),
-        ('/login',          LoginPage),
-        ('/login/(.+)',     LoginPage),
+        ('/',                   DilbertPage),
+        ('/dilbert/(\d*)',      DilbertPage),
+        ('/dilbert/export',     ExportPage),
+        ('/logout',             LogoutPage),
+        ('/logout/(.+)',        LogoutPage),
+        ('/login',              LoginPage),
+        ('/login/(.+)',         LoginPage),
     ],
     debug=True)
 wsgiref.handlers.CGIHandler().run(application)
