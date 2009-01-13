@@ -29,6 +29,7 @@ class DilbertPage(webapp.RequestHandler):
             q = Dilbert.all().filter('date = ', date).order('-time').fetch(5)
             out = { 'date': date, 'next': self.next(date), 'prev': self.prev(date) }
             out['desc']     = q and q[0].desc or ''
+            out['author']   = q and q[0].user or ''
             out['past']     = len(out['desc']) > 1 and q[1:] or None
             out['user']     = user
             out['users']    = User.all().order('-num').fetch(10)
