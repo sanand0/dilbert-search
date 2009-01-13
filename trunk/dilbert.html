@@ -35,7 +35,8 @@ li { margin-left: 18px;}
         {% else %}
             <pre id="desc">{{ desc }}</pre>
         {% endif %}
-        <br>
+        <i>{{ author.nickname }}</i>
+        <br><br>
         <a href="{{ prev }}">&laquo; Prev <img class="next" src="{{ img_prev }}"></a>
         <a href="{{ next }}"><img class="next" src="{{ img_next }}"> Next &raquo;</a>
         {% if past %}
