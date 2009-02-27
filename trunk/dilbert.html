@@ -7,14 +7,23 @@
 .author { font-style: italic; color: #39639d; }
 textarea#desc { height: 150px; }
 img.next, img.prev { width: 100px; border: 0; }
-input:focus, textarea:focus { outline: 2px solid #da1f28; }
+input:focus, textarea:focus { border: 2px solid #c0504d; }
 li { margin-left: 18px;}
+.warning { background-color: #c0504d; color: white; margin: 5px 0; padding: 5px; }
+.thanks { background-color: #182; color: white; margin: 5px 0; padding: 5px; }
+.login, .untyped { font-weight: bold; font-size: 125%; margin-bottom: 10px; }
 </style>
 </head><body>
 <div class="container_16">
     <div class="grid_13">
+        {% if thanks %}<div class="thanks"><b>Thank you</b>. Here's the next one.</div>{% endif %}
         <img src="{{ img_date }}">
-        <!-- <br><a target="dribibu" href="http://dribibu.xs4all.nl/dilbert{{ date }}.html">Click here if you can't see the image above</a> -->
+        {% if few_words %}<div class="warning alpha grid_9">
+            You appear to have typed just {{ few_words }} words describing this strip.<br>
+            Please help us by typing in the <b>full text</b> of the comic strip.<br>
+            That is, write <b>every word</b> that appears in the comic above.<br>
+            Thank you for your help!
+        </div><div class="clear">&nbsp;</div>{% endif %}
         {% if user %}
         <form action="" method="POST">
             <input id="date" name="date" type="hidden" value="{{ date }}">
@@ -51,12 +60,12 @@ li { margin-left: 18px;}
     <div id="side_block" class="grid_3 block">
         <p>If you'd like to search for Dilbert strips, you can help by typing in the strips here.</p>
         {% if user %}
-            <a href="{{ unused }}">Find an un-typed comic</a>
-            <br><a href="export">Export the text as JSON</a>
-            <br><a href="/logout/{{ date }}">Logout</a>
+            <div class="untyped"><a href="{{ unused }}">Find comic to type</a></div>
+            <div class="export"><a href="export">Export the text as JSON</a></div>
+            <div class="logout"><a href="/logout/{{ date }}">Logout</a></div>
         {% else %}
-            <a href="/login/{{ date }}">Login to type out the strips</a>
-            <br><a href="export">Export the text as JSON</a>
+            <div class="login"><a href="/login/{{ date }}">Login</a></div>
+            <div class="export"><a href="export">Export the text as JSON</a></div>
         {% endif %}
         <br><br><b>Top authors</b>
         <ul>

@@ -34,6 +34,8 @@ class DilbertPage(webapp.RequestHandler):
             out['user']     = user
             out['users']    = User.all().order('-num').fetch(10)
             out['unused']   = self.unused()
+            out['few_words'] = self.request.get('few_words')
+            out['thanks']   = self.request.get('thanks')
             out['img_date'] = out['date'] > endyear and 'http://www.geek.nl/pics/dilbert-arch/dilbert-' + out['date'] + '.gif' or '/' + out['date'][:7] + '/' + out['date'] + '.gif'
             out['img_next'] = out['next'] > endyear and 'http://www.geek.nl/pics/dilbert-arch/dilbert-' + out['next'] + '.gif' or '/' + out['next'][:7] + '/' + out['next'] + '.gif'
             out['img_prev'] = out['prev'] > endyear and 'http://www.geek.nl/pics/dilbert-arch/dilbert-' + out['prev'] + '.gif' or '/' + out['prev'][:7] + '/' + out['prev'] + '.gif'
@@ -45,20 +47,24 @@ class DilbertPage(webapp.RequestHandler):
     def post(self, date):
         desc = self.request.get('desc')
         if user and desc:
-            q = Dilbert.all().filter('date = ', date).order('-time').fetch(1)
-            # Add the description if it is different from the previous entry
-            if q and q[0].desc != desc or not q: Dilbert(date=date, desc=desc, user=user).put()
-
-            # Update the user stats
-            q = User.all().filter('user = ', user).fetch(1)
-            if q:
-                q[0].num = q[0].num + 1
-                q[0].time = now
-                q[0].put()
+            wc = len(desc.split())
+            if wc < 8:
+                self.redirect('/dilbert/' + date + '?few_words=' + str(wc))
             else:
-                 User(user=user, num=1).put()
+                q = Dilbert.all().filter('date = ', date).order('-time').fetch(1)
+                # Add the description if it is different from the previous entry
+                if q and q[0].desc != desc or not q: Dilbert(date=date, desc=desc, user=user).put()
 
-            self.redirect('/dilbert/' + self.next(date))
+                # Update the user stats
+                q = User.all().filter('user = ', user).fetch(1)
+                if q:
+                    q[0].num += 1
+                    q[0].time = now
+                    q[0].put()
+                else:
+                     User(user=user, num=1).put()
+
+                self.redirect('/dilbert/' + self.next(date) + '?thanks=1')
         else:
             self.redirect('/login/' + date)
 
