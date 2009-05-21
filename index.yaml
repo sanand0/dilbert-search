@@ -10,10 +10,18 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
-# Used 147 times in query history.
+# Used 38 times in query history.
 - kind: Dilbert
   properties:
   - name: date
+  - name: time
+    direction: desc
+
+# Used once in query history.
+- kind: Dilbert
+  properties:
+  - name: date
+    direction: desc
   - name: time
     direction: desc
 
