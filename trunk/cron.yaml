@@ -1,0 +1,68 @@
+cron:
+- description: dump 1993
+  url: /dilbert/export/1993
+  schedule: every 24 hours
+
+- description: dump 1994
+  url: /dilbert/export/1994
+  schedule: every 24 hours
+
+- description: dump 1995
+  url: /dilbert/export/1995
+  schedule: every 24 hours
+
+- description: dump 1996
+  url: /dilbert/export/1996
+  schedule: every 24 hours
+
+- description: dump 1997
+  url: /dilbert/export/1997
+  schedule: every 24 hours
+
+- description: dump 1998
+  url: /dilbert/export/1998
+  schedule: every 24 hours
+
+- description: dump 1999
+  url: /dilbert/export/1999
+  schedule: every 24 hours
+
+- description: dump 2000
+  url: /dilbert/export/2000
+  schedule: every 24 hours
+
+- description: dump 2001
+  url: /dilbert/export/2001
+  schedule: every 24 hours
+
+- description: dump 2002
+  url: /dilbert/export/2002
+  schedule: every 24 hours
+
+- description: dump 2003
+  url: /dilbert/export/2003
+  schedule: every 24 hours
+
+- description: dump 2004
+  url: /dilbert/export/2004
+  schedule: every 24 hours
+
+- description: dump 2005
+  url: /dilbert/export/2005
+  schedule: every 24 hours
+
+- description: dump 2006
+  url: /dilbert/export/2006
+  schedule: every 24 hours
+
+- description: dump 2007
+  url: /dilbert/export/2007
+  schedule: every 24 hours
+
+- description: dump 2008
+  url: /dilbert/export/2008
+  schedule: every 24 hours
+
+- description: dump 2009
+  url: /dilbert/export/2009
+  schedule: every 24 hours

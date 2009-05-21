@@ -17,8 +17,13 @@ handlers:
   static_files: favicon.ico
   upload: favicon.ico
 
+- url: /remote_api
+  script: $PYTHON_LIB/google/appengine/ext/remote_api/handler.py
+  login: admin
+
 - url: /\d+/\d+\.gif
   script: $PYTHON_LIB/google/appengine/ext/zipserve
 
 - url: /.*
   script: dilbert.py
+

@@ -1,8 +1,8 @@
 import wsgiref.handlers, datetime, random
 
 from google.appengine.ext import webapp
-from google.appengine.ext import db
 from google.appengine.api import users
+from google.appengine.ext import db
 from google.appengine.ext.webapp import template
 
 user     = users.get_current_user()
@@ -22,6 +22,10 @@ class User(db.Model):
     user = db.UserProperty       (required=True)
     num  = db.IntegerProperty    (required=True)
     time = db.DateTimeProperty   (required=True, auto_now_add=True)
+
+class Dump(db.Model):
+    year = db.StringProperty     (required=True)
+    desc = db.TextProperty       (required=True)
 
 class DilbertPage(webapp.RequestHandler):
     def get(self, date = None):
@@ -87,18 +91,24 @@ class DilbertPage(webapp.RequestHandler):
 
 class ExportPage(webapp.RequestHandler):
     def get(self):
-        if user:
-            q = Dilbert.all().order('-time')
-            self.response.headers["Content-Type"] = "application/javascript"
-            self.response.out.write('dilbert([\n')
-            done = {}
-            for item in q:
-                if done.get(item.date, None): continue
-                else: done[item.date] = 1
-                self.response.out.write('["' + item.date + '","' + item.desc.replace('\n', '\\n').replace('\r', '').replace('"', '\\"') + '"],\n')
-            self.response.out.write('0])')
+        self.response.headers["Content-Type"] = "text/plain"
+        self.response.out.write('id\tquote\n' + '\n'.join((item.desc for item in Dump.all().order('year'))))
+
+class DumpPage(webapp.RequestHandler):
+    def get(self, year):
+        if users.is_current_user_admin():
+            done, dump = {}, []
+            for item in Dilbert.all().order('date').filter('date >= ', year + '0101').filter('date <= ', year + '1231').order('-time'):
+                if not done.has_key(item.date):
+                    done[item.date] = 1
+                    dump.append(item.date + '\t' + item.desc.replace('\n', ' ').replace('\r', ''))
+            if dump:
+                entity = Dump.all().filter('year = ', year).get() or Dump(year=year, desc='desc')
+                entity.desc = '\n'.join(dump)
+                entity.put()
+            self.response.out.write('Dumped year: ' + year)
         else:
-            self.redirect('/login/export')
+            self.response.out.write('Only the administrator can dump data, because it uses a lot of CPU. This is done daily.')
 
 class LogoutPage(webapp.RequestHandler):
     def get(self, date = None):
@@ -111,13 +121,14 @@ class LoginPage(webapp.RequestHandler):
         else:    self.redirect(users.create_login_url('/dilbert'))
 
 application = webapp.WSGIApplication([
-        ('/',                   DilbertPage),
-        ('/dilbert/(\d*)',      DilbertPage),
-        ('/dilbert/export',     ExportPage),
-        ('/logout',             LogoutPage),
-        ('/logout/(.+)',        LogoutPage),
-        ('/login',              LoginPage),
-        ('/login/(.+)',         LoginPage),
+        ('/',                           DilbertPage),
+        ('/dilbert/(\d*)',              DilbertPage),
+        ('/dilbert/export',             ExportPage),
+        ('/dilbert/export/(\d\d\d\d)',  DumpPage),
+        ('/logout',                     LogoutPage),
+        ('/logout/(.+)',                LogoutPage),
+        ('/login',                      LoginPage),
+        ('/login/(.+)',                 LoginPage),
     ],
     debug=True)
 wsgiref.handlers.CGIHandler().run(application)

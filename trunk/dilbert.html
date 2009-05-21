@@ -61,11 +61,11 @@ li { margin-left: 18px;}
         <p>If you'd like to search for Dilbert strips, you can help by typing in the strips here.</p>
         {% if user %}
             <div class="untyped"><a href="{{ unused }}">Find comic to type</a></div>
-            <div class="export"><a href="export">Export the text as JSON</a></div>
+            <div class="export"><a href="export">Download typed comics</a></div>
             <div class="logout"><a href="/logout/{{ date }}">Logout</a></div>
         {% else %}
             <div class="login"><a href="/login/{{ date }}">Login</a></div>
-            <div class="export"><a href="export">Export the text as JSON</a></div>
+            <div class="export"><a href="export">Download typed comics</a></div>
         {% endif %}
         <br><br><b>Top authors</b>
         <ul>
