@@ -4,6 +4,7 @@ from google.appengine.ext import webapp
 from google.appengine.api import users
 from google.appengine.ext import db
 from google.appengine.ext.webapp import template
+from time import strftime
 
 user     = users.get_current_user()
 oneday   = datetime.timedelta(1)
@@ -27,6 +28,8 @@ class Dump(db.Model):
     year = db.StringProperty     (required=True)
     desc = db.TextProperty       (required=True)
 
+def url(date): return date > endyear and 'http://www.geek.nl/pics/dilbert-arch/dilbert-' + date + '.gif' or 'http://dilbert-search.appspot.com/' + date[:7] + '/' + date + '.gif'
+
 class DilbertPage(webapp.RequestHandler):
     def get(self, date = None):
         if date:
@@ -40,9 +43,9 @@ class DilbertPage(webapp.RequestHandler):
             out['unused']   = self.unused()
             out['few_words'] = self.request.get('few_words')
             out['thanks']   = self.request.get('thanks')
-            out['img_date'] = out['date'] > endyear and 'http://www.geek.nl/pics/dilbert-arch/dilbert-' + out['date'] + '.gif' or '/' + out['date'][:7] + '/' + out['date'] + '.gif'
-            out['img_next'] = out['next'] > endyear and 'http://www.geek.nl/pics/dilbert-arch/dilbert-' + out['next'] + '.gif' or '/' + out['next'][:7] + '/' + out['next'] + '.gif'
-            out['img_prev'] = out['prev'] > endyear and 'http://www.geek.nl/pics/dilbert-arch/dilbert-' + out['prev'] + '.gif' or '/' + out['prev'][:7] + '/' + out['prev'] + '.gif'
+            out['img_date'] = url(out['date'])
+            out['img_next'] = url(out['next'])
+            out['img_prev'] = url(out['prev'])
             self.response.out.write(template.render('dilbert.html', out))
         else:
             self.redirect('/dilbert/' + self.unused(), True)
@@ -94,6 +97,13 @@ class ExportPage(webapp.RequestHandler):
         self.response.headers["Content-Type"] = "text/plain"
         self.response.out.write('id\tquote\n' + '\n'.join((item.desc for item in Dump.all().order('year'))))
 
+class FeedPage(webapp.RequestHandler):
+    def get(self):
+        self.response.headers["Content-Type"] = "text/xml"
+        entries = Dilbert.all().order('-time').fetch(100)
+        for entry in entries: entry.url = url(entry.date)
+        self.response.out.write(template.render('feed.xml', {'entries': entries, 'updated': entries[0].time}))
+
 class DumpPage(webapp.RequestHandler):
     def get(self, year):
         if users.is_current_user_admin():
@@ -125,6 +135,7 @@ application = webapp.WSGIApplication([
         ('/dilbert/(\d*)',              DilbertPage),
         ('/dilbert/export',             ExportPage),
         ('/dilbert/export/(\d\d\d\d)',  DumpPage),
+        ('/dilbert/rss',                FeedPage),
         ('/logout',                     LogoutPage),
         ('/logout/(.+)',                LogoutPage),
         ('/login',                      LoginPage),
