@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0">
+<channel>
+<title>Dilbert search</title>
+<link>http://dilbert-search.appspot.com/</link>
+<description>Type out the Dilbert strips so you can search for them.</description>
+<pubDate>{{ updated|date:"r" }}</pubDate>
+{% for entry in entries %}
+<item>
+	<title>Dilbert: {{ entry.date }}</title>
+	<link>http://dilbert-search.appspot.com/dilbert/{{ entry.date }}</link>
+	<guid>http://dilbert-search.appspot.com/dilbert/{{ entry.date }}</guid>
+	<description><![CDATA[<img src="{{ entry.url }}"/><pre>{{ entry.desc }}</pre>]]></description>
+	<author>{{ entry.user.email }}</author>
+	<pubDate>{{ entry.time|date:"r" }}</pubDate>
+</item>
+{% endfor %}
+</channel>
+</rss>
