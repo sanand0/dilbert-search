@@ -35,6 +35,7 @@ class DilbertPage(webapp.RequestHandler):
         if date:
             q = Dilbert.all().filter('date = ', date).order('-time').fetch(5)
             out = { 'date': date, 'next': self.next(date), 'prev': self.prev(date) }
+            out['ie']       = self.request.headers['User-Agent'].find('MSIE') >= 0 and 1 or 0
             out['desc']     = q and q[0].desc or ''
             out['author']   = q and q[0].user or ''
             out['past']     = len(out['desc']) > 1 and q[1:] or None
