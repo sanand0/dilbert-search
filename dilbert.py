@@ -72,7 +72,8 @@ class DilbertPage(webapp.RequestHandler):
                 else:
                      User(user=user, num=1).put()
 
-                self.redirect('/dilbert/' + self.next(date) + '?thanks=1')
+                # self.redirect('/dilbert/' + self.next(date) + '?thanks=1')
+                self.redirect('/dilbert/' + self.unused() + '?thanks=1', True)
         else:
             self.redirect('/login/' + date)
 
