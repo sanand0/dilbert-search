@@ -66,3 +66,7 @@ cron:
 - description: dump 2009
   url: /dilbert/export/2009
   schedule: every 24 hours
+
+- description: dump 2010
+  url: /dilbert/export/2010
+  schedule: every 24 hours
